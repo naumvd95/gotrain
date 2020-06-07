@@ -1,0 +1,307 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<style>
+			body {
+				background: black;
+				color: rgb(80, 80, 80);
+			}
+			body, pre, #legend span {
+				font-family: Menlo, monospace;
+				font-weight: bold;
+			}
+			#topbar {
+				background: black;
+				position: fixed;
+				top: 0; left: 0; right: 0;
+				height: 42px;
+				border-bottom: 1px solid rgb(80, 80, 80);
+			}
+			#content {
+				margin-top: 50px;
+			}
+			#nav, #legend {
+				float: left;
+				margin-left: 10px;
+			}
+			#legend {
+				margin-top: 12px;
+			}
+			#nav {
+				margin-top: 10px;
+			}
+			#legend span {
+				margin: 0 5px;
+			}
+			.cov0 { color: rgb(192, 0, 0) }
+.cov1 { color: rgb(128, 128, 128) }
+.cov2 { color: rgb(116, 140, 131) }
+.cov3 { color: rgb(104, 152, 134) }
+.cov4 { color: rgb(92, 164, 137) }
+.cov5 { color: rgb(80, 176, 140) }
+.cov6 { color: rgb(68, 188, 143) }
+.cov7 { color: rgb(56, 200, 146) }
+.cov8 { color: rgb(44, 212, 149) }
+.cov9 { color: rgb(32, 224, 152) }
+.cov10 { color: rgb(20, 236, 155) }
+
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div id="nav">
+				<select id="files">
+				
+				<option value="file0">github.com/gotrain/parseCsv.go (5.1%)</option>
+				
+				</select>
+			</div>
+			<div id="legend">
+				<span>not tracked</span>
+			
+				<span class="cov0">not covered</span>
+				<span class="cov8">covered</span>
+			
+			</div>
+		</div>
+		<div id="content">
+		
+		<pre class="file" id="file0" style="display: none">package main
+
+/*
+Input:
+csv string:
+`
+Username; Identifier;First name;Last name
+booker12;9012;Rachel;Booker
+grey07;2070;Laura;Grey
+johnson81;4081;Craig;Johnson
+jenkins46;9346;Mary;Jenkins
+smith79;5079;Jamie;Smith
+`
+Output:
+Prettified data sets like:
+{"Username": "booker12", "Identifier": "9012", "First name": Rachel, "Last name": "Booker"}
+*/
+import (
+        "encoding/csv"
+        "encoding/json"
+        "fmt"
+        "io/ioutil"
+        "log"
+        "os"
+        "strconv"
+        "strings"
+)
+
+type dataStruct struct {
+        Username   string `json:"username"`
+        Identifier int    `json:"identifier"`
+        FirstName  string `json:"first name"`
+        LastName   string `json:"last name"`
+}
+
+//csvAsJSON receives string interpolation of CSV data and returns parsed struct in string interpolated json
+func csvAsJSON(in string) (string, error) <span class="cov0" title="0">{
+        // 1. Use external csv lib
+        r := csv.NewReader(strings.NewReader(in))
+        // 2. set custom separator
+        r.Comma = ';'
+        records, err := r.ReadAll()
+        if err != nil </span><span class="cov0" title="0">{
+                return "", err
+        }</span>
+        <span class="cov0" title="0">fmt.Printf("here is parsed csv [][]string: %v \n", records)
+
+        fmt.Println("Marshalling into predefined struct")
+        // 3. create struct w/ predefined fields
+        var persons []dataStruct
+        // 4. skipping slice w/ keys
+        for _, r := range records[1:] </span><span class="cov0" title="0">{
+                parsedIdentifier, err := strconv.Atoi(r[1])
+                if err != nil </span><span class="cov0" title="0">{
+                        return "", err
+                }</span>
+
+                <span class="cov0" title="0">persons = append(persons, dataStruct{
+                        Username:   r[0],
+                        Identifier: parsedIdentifier,
+                        FirstName:  r[2],
+                        LastName:   r[3],
+                })</span>
+        }
+        // 4. Marshall in json to prettify output
+        <span class="cov0" title="0">personsJSON, err := json.Marshal(persons)
+        if err != nil </span><span class="cov0" title="0">{
+                return "", err
+        }</span>
+
+        // 5. Use strings to convert json obj for pretty printing
+        <span class="cov0" title="0">return string(personsJSON), nil</span>
+}
+
+//csvAsMap receives string interpolation of CSV data and returns map w/ parsed keys/elements
+func csvAsMap(in string) ([]map[string]string, error) <span class="cov0" title="0">{
+        //TODO here is repeatable steps, used in another func as well,
+        //duplicating it only for study perspectives, ideally need 1 more common func
+        // 1. Use external csv lib
+        r := csv.NewReader(strings.NewReader(in))
+        // 2. set custom separator
+        r.Comma = ';'
+        records, err := r.ReadAll()
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov0" title="0">fmt.Printf("here is parsed csv [][]string: %v \n", records)
+
+        usernameKey := records[0][0]
+        identKey := records[0][1]
+        firstNameKey := records[0][2]
+        lastNameKey := records[0][3]
+        // 6. create map
+        var personsMap []map[string]string
+        // 7. skipping slice w/ keys
+        for _, r := range records[1:] </span><span class="cov0" title="0">{
+                personsMap = append(personsMap, map[string]string{
+                        usernameKey:  r[0],
+                        identKey:     r[1], // cannot use mixed types string+int easily, so present it as string
+                        firstNameKey: r[2],
+                        lastNameKey:  r[3],
+                })
+        }</span>
+
+        <span class="cov0" title="0">return personsMap, nil</span>
+}
+
+//PrettyPrintStr just prettifies printing and used for checking go test ;)
+func PrettyPrintStr(dataType, dataSet string) (string, error) <span class="cov8" title="1">{
+        switch dataType </span>{
+        case "structedJson":<span class="cov8" title="1">
+                return fmt.Sprintf("here is json struct from csv: %v \n\n", dataSet), nil</span>
+        case "map":<span class="cov8" title="1">
+                return fmt.Sprintf("here is map from csv: %v \n\n", dataSet), nil</span>
+        default:<span class="cov8" title="1">
+                return "", PrettyErr</span>
+        }
+
+}
+
+// PrettyErrorSet represents custom error interface
+type PrettyErrorSet string
+
+func (e PrettyErrorSet) Error() string <span class="cov0" title="0">{
+        return string(e)
+}</span>
+
+const (
+        csvInput string = `Username;Identifier;First name;Last name
+ booker12;9012;Rachel;Booker
+ grey07;2070;Laura;Grey
+ johnson81;4081;Craig;Johnson
+ jenkins46;9346;Mary;Jenkins
+ smith79;5079;Jamie;Smith`
+        //PrettyErr custom error
+        PrettyErr PrettyErrorSet = "Failed to prettify output"
+)
+
+func main() <span class="cov0" title="0">{
+        var ppStr string
+        var ppErr error
+
+        fmt.Println("1. Marshalling into custom json struct")
+        personsJSON, err := csvAsJSON(csvInput)
+        if err != nil </span><span class="cov0" title="0">{
+                log.Fatal(err)
+        }</span>
+        <span class="cov0" title="0">ppStr, ppErr = PrettyPrintStr("structedJson", personsJSON)
+        if err != nil </span><span class="cov0" title="0">{
+                log.Fatal(ppErr)
+        }</span>
+        <span class="cov0" title="0">fmt.Println(ppStr)
+
+        fmt.Println("2. Alternative Marshalling into custom map")
+        personsMap, err := csvAsMap(csvInput)
+        if err != nil </span><span class="cov0" title="0">{
+                log.Fatal(err)
+        }</span>
+        // convert map to string
+        <span class="cov0" title="0">var slicePersons string
+        for _, el := range personsMap </span><span class="cov0" title="0">{
+                for key, value := range el </span><span class="cov0" title="0">{
+                        slicePersons += fmt.Sprintf("%s=%s,\n", key, value)
+                }</span>
+        }
+
+        <span class="cov0" title="0">ppStr, ppErr = PrettyPrintStr("map", slicePersons)
+        if err != nil </span><span class="cov0" title="0">{
+                log.Fatal(ppErr)
+        }</span>
+        <span class="cov0" title="0">fmt.Println(ppStr)
+
+        fmt.Println("3. Read/Write file operations w/ data sets")
+        // 8. Writing/Reading json
+        f, err := os.Create("csv-to-json-example.json")
+        if err != nil </span><span class="cov0" title="0">{
+                log.Fatal(err)
+        }</span>
+        <span class="cov0" title="0">_, err = f.WriteString(string(personsJSON))
+        if err != nil </span><span class="cov0" title="0">{
+                log.Fatal(err)
+        }</span>
+        <span class="cov0" title="0">defer f.Close()
+
+        fmt.Println("Here is csv-to-json-example.json, try reading")
+        // 9. Open json file and read bytes from it
+        jsonFile, err := os.Open("csv-to-json-example.json")
+        if err != nil </span><span class="cov0" title="0">{
+                log.Fatal(err)
+        }</span>
+        <span class="cov0" title="0">jsonBytes, err := ioutil.ReadAll(jsonFile)
+        if err != nil </span><span class="cov0" title="0">{
+                log.Fatal(err)
+        }</span>
+        <span class="cov0" title="0">defer jsonFile.Close()
+
+        // 10. Init struct object to unmarshall in
+        var personsFromFile []dataStruct
+        err = json.Unmarshal(jsonBytes, &amp;personsFromFile)
+        if err != nil </span><span class="cov0" title="0">{
+                log.Fatal(err)
+        }</span>
+        <span class="cov0" title="0">fmt.Printf("here is struct from json file: %v \n", personsFromFile)</span>
+
+}
+</pre>
+		
+		</div>
+	</body>
+	<script>
+	(function() {
+		var files = document.getElementById('files');
+		var visible;
+		files.addEventListener('change', onChange, false);
+		function select(part) {
+			if (visible)
+				visible.style.display = 'none';
+			visible = document.getElementById(part);
+			if (!visible)
+				return;
+			files.value = part;
+			visible.style.display = 'block';
+			location.hash = part;
+		}
+		function onChange() {
+			select(files.value);
+			window.scrollTo(0, 0);
+		}
+		if (location.hash != "") {
+			select(location.hash.substr(1));
+		}
+		if (!visible) {
+			select("file0");
+		}
+	})();
+	</script>
+</html>
