@@ -14,6 +14,8 @@ go run parseCsv.go
 
 ## Unit testing
 
+0. Go to `unit-test-example`
+
 1. Run unit testing:
 
 ```bash
@@ -31,3 +33,14 @@ go test -v -coverprofile=test-coverage.txt
 ```bash
 go tool cover -html=test-coverage.txt -o test-coverage.html
 ```
+
+## Benchmark testing
+
+0. Go to `sorting-example/merge-sort`
+
+1. Run unit testing:
+
+```bash
+go test -bench=.
+```
+
