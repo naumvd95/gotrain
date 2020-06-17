@@ -1,10 +1,14 @@
-package mergesort
+package sort
 
-import "sync"
+import (
+	"sync"
 
-func merge(leftChunk, rightChunk []int) []int {
+	"github.com/naumvd95/gotrain/common"
+)
+
+func merge(leftChunk, rightChunk []common.CovidUnit) []common.CovidUnit {
 	// control size of resulting slice
-	res := make([]int, 0, len(leftChunk)+len(rightChunk))
+	res := make([]common.CovidUnit, 0, len(leftChunk)+len(rightChunk))
 
 	// while one of chunks is not empty
 	for len(leftChunk) > 0 || len(rightChunk) > 0 {
@@ -16,7 +20,7 @@ func merge(leftChunk, rightChunk []int) []int {
 		if len(rightChunk) == 0 {
 			return append(res, leftChunk...)
 		}
-		if leftChunk[0] <= rightChunk[0] {
+		if leftChunk[0].DeathByDate <= rightChunk[0].DeathByDate {
 			res = append(res, leftChunk[0])
 			// cut off calculated part
 			leftChunk = leftChunk[1:]
@@ -31,15 +35,15 @@ func merge(leftChunk, rightChunk []int) []int {
 }
 
 //MergeSortSingleThread Typical divide->sort->merge alghoritm in single thread mode
-func MergeSortSingleThread(dataset []int) []int {
+func MergeSortSingleThread(dataset []common.CovidUnit) []common.CovidUnit {
 	// nothing to sort
 	if len(dataset) <= 1 {
 		return dataset
 	}
 
 	initialDivider := len(dataset) / 2
-	var leftChunk []int
-	var rightChunk []int
+	var leftChunk []common.CovidUnit
+	var rightChunk []common.CovidUnit
 
 	// recursive division
 	leftChunk = MergeSortSingleThread(dataset[:initialDivider])
@@ -53,7 +57,7 @@ func MergeSortSingleThread(dataset []int) []int {
 var sem = make(chan struct{}, 100)
 
 //MergeSortMultiThread Typical divide->sort->merge alghoritm in multi thread mode
-func MergeSortMultiThread(dataset []int) []int {
+func MergeSortMultiThread(dataset []common.CovidUnit) []common.CovidUnit {
 	// nothing to sort
 	if len(dataset) <= 1 {
 		return dataset
@@ -61,8 +65,8 @@ func MergeSortMultiThread(dataset []int) []int {
 
 	// start initial division of big dataset
 	initialDivider := len(dataset) / 2
-	var leftChunk []int
-	var rightChunk []int
+	var leftChunk []common.CovidUnit
+	var rightChunk []common.CovidUnit
 	// init wait group to sync states from goroutines
 	wg := sync.WaitGroup{}
 	wg.Add(2) // 2 threads for left/rigth chunks

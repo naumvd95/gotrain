@@ -44,3 +44,32 @@ go tool cover -html=test-coverage.txt -o test-coverage.html
 go test -bench=.
 ```
 
+## Sorting
+
+Go to `sorting-example/merge-sort`, topics:
+
+- merge sort for customized struct objects
+- single thread sorting
+- multithread sorting (goroutine and waitgroups)
+- threads management (semaphore pattern as buffered channel for driving amount of goroutines and switch to single thread in case of limit exceeded)
+
+## Map Reduce operations
+
+0. Go to `map-merge-reduce-example`
+1. Run app:
+
+```bash
+go run mmr.go
+```
+
+topics:
+
+- get CSV data re: Covid cases from open sources
+- Define desired date to monitor cases in all countries (MAP training)
+- Define amount of critical deaths border (REDUCE training)
+- Sort values using merge sort alghoritm
+- MAP + multithread = creating struct objects from csv plain text
+- REDUCE + multithread = filter them by critical deaths border
+- Sort + multithread = sort by amount of death
+- Pretty print
+-
