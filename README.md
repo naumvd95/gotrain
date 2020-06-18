@@ -12,6 +12,20 @@ Main goal af this repo: Fundamentals training in Golang.
 go run parseCsv.go 
 ```
 
+2. Parse nginx access log from K8S pod as unformatted csv:
+
+```bash
+cd parsing-plain-text-example && go run parseNginx.go
+```
+
+topics:
+
+- get log as file from pod logs stdout
+- get rid of infra nginx logs and provide only clear access log using `os` for file ops
+and `bufio` Scanner to get rid of non-access log lines (using IP regex match)
+- parse as csv with whitespace delimeter
+- map it into struct with time.Time and int formats for response codes/timelogs
+
 ## Unit testing
 
 0. Go to `unit-test-example`
