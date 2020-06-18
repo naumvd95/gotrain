@@ -86,4 +86,3 @@ topics:
 - REDUCE + multithread = filter them by critical deaths border
 - Sort + multithread = sort by amount of death
 - Pretty print
--

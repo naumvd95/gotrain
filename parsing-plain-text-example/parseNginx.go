@@ -83,7 +83,6 @@ func parseNginxLog(plainData string) ([]NginxLogCombined, error) {
 
 	for _, r := range records {
 		// dirty hack to because time log contains whitespace that reacts on csv delimeter
-		//		combineTimeLog := strings.ReplaceAll(r[3], "[", "") + " " + strings.ReplaceAll(r[4], "]", "")
 		combineTimeLog := r[3] + " " + r[4]
 
 		// transforming str data in desired format
