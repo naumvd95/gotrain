@@ -82,7 +82,7 @@ func parseNginxLog(plainData string) ([]NginxLogCombined, error) {
 	}
 
 	for _, r := range records {
-		// dirty hack to because time log contains whitespace that reacts on csv delimeter
+		// dirty hack to recover timestamp because time log contains whitespace that reacts on csv delimeter
 		combineTimeLog := r[3] + " " + r[4]
 
 		// transforming str data in desired format
