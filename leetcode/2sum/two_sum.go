@@ -16,6 +16,12 @@ Output: [0,1]
 Output: Because nums[0] + nums[1] == 9, we return [0, 1].
 */
 
+/*
+COMPLEXITY:
+
+time: o(n) , because of loop for all nums
+space: o(n) , because we store all numbers in map
+*/
 func findTwoSumIndicies(nums []int, target int) []int {
 	verifiedNums := make(map[int]int) // key: number , value: index of that number
 

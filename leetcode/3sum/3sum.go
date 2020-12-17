@@ -31,7 +31,12 @@ type hashSet struct{} // weight less than bool
 
 /* threeSumPrimitive solution w/o sorting whole array. Its more primitive way,
    because anyway we need to sort it under the hood to create unique keys for hashMap
-   TODO WHATS about complexity here???
+
+COMPLEXITY:
+
+time: O(n^2) because of 2 nested loops
+space: possible O(n^2) twoSumVerifiedMap && hashMapTriplets ?
+
 */
 func threeSumPrimitive(nums []int) [][]int {
 	res := [][]int{} // final result
@@ -81,7 +86,14 @@ func threeSumPrimitive(nums []int) [][]int {
 	return res
 }
 
-// threeSumFast pre-sort slice to apply 2-pointer 2sum solution and avoid additional loop and hashSet
+/* threeSumFast pre-sort slice to apply 2-pointer 2sum solution and avoid additional loop and hashSet
+
+COMPLEXITY:
+
+time: O(n^2) because of sort
+space: possible O(n)? coz we got rid of 2sum map verification
+
+*/
 func threeSumFast(nums []int) [][]int {
 	res := [][]int{} // final result
 
@@ -96,7 +108,7 @@ func threeSumFast(nums []int) [][]int {
 		return res
 	}
 
-	sort.Ints(nums)                             // sort slice before all operation to apply 2-pointer solution
+	sort.Ints(nums)                             // (quicksort) sort slice before all operation to apply 2-pointer solution O(n log n)
 	var isMember hashSet                        // TODO find a way to check uniq w/ hashSet for sorted slice
 	hashMapTriplets := make(map[[3]int]hashSet) // hash map for keeping only unique triplets!
 	// A + B + C = 0 is our current expression
