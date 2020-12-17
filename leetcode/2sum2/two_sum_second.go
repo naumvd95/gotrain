@@ -22,7 +22,7 @@ func findTwoSumIndiciesNg(nums []int, target int) []int {
 	head := 1
 	tail := len(nums)
 
-	for { // handle loop w/ continue and return
+	for head < tail { // handle loop w/ continue and return
 		sum := nums[head-1] + nums[tail-1] // start to calculate possible sum and compare w/ target
 
 		if sum > target { // if its too much, decrease our tail [slice sorted ASC]
