@@ -44,6 +44,9 @@ var data = []testData{
 func TestThreeSumPrimitive(t *testing.T) {
 	for _, v := range data {
 		res := threeSumPrimitive(v.InputNumbers)
+		if len(res) != len(v.OutputPositions) {
+			t.Errorf("[Amount] Expected: %v, got %v\n", v.OutputPositions, res)
+		}
 
 		for _, desiredResSlice := range v.OutputPositions {
 			match := false
@@ -64,6 +67,9 @@ func TestThreeSumPrimitive(t *testing.T) {
 func TestThreeSumFast(t *testing.T) {
 	for _, v := range data {
 		res := threeSumFast(v.InputNumbers)
+		if len(res) != len(v.OutputPositions) {
+			t.Errorf("[Amount] Expected: %v, got %v\n", v.OutputPositions, res)
+		}
 
 		for _, desiredResSlice := range v.OutputPositions {
 			match := false
