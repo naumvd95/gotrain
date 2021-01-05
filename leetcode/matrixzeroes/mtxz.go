@@ -41,6 +41,12 @@ NOTE: matrix[0][0] value cannot be written as mind marker, it breaks column mark
 COMPLEXITY:
 space: O(1) , we dont use additional space
 time: O(M*N), because we are iterating over matrix
+
+SOLUTION MINDSET:
+Instead of using additional object to remeber where u need to fill zeroes (in rows&columns), u may use 1st row of matrix itself as Mind marker board for columns
+U just need to remember initial state of 1st row, then feel free to mark columns, which needed to be set to zero, as indexPosition in your 1st mind row
+Row markers can be applied to related rows itself, because it wont break anything
+
 */
 
 func setZeroes(matrix [][]int) {

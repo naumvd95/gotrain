@@ -36,6 +36,13 @@ strs[i] consists of lower-case English letters.
 COMPLEXITY:
 time: O(strMaxLen*strAmount)
 space: O(strMaxLen*strAmount) = hash map
+
+SOLUTION MINDSET:
+You defenitely need to use hashSet for collecting data "anagram:amount"
+1) Use sorted string as hash key
+2) OR create alphabet template to apply for each anagram: 0 - means letter is not exist in aragram, 1 and more - means letters exists in anagram
+   with such approach, you dont need to sort each anagram string, you just need to split it on chars and apply to your alphabet template, then use it as key in HashSet
+
 */
 func groupAnagramsByAlphabetHash(strs []string) [][]string {
 	res := [][]string{}

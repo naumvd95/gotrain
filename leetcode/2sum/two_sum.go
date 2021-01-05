@@ -21,6 +21,12 @@ COMPLEXITY:
 
 time: o(n) , because of loop for all nums
 space: o(n) , because we store all numbers in map
+
+SOLUTION MINDSET:
+
+Use 'proposal' to forecast number that may suite condition: proposal = "target(already know)" -  "currentTraverser(interating via nums)"
+and try to find it in your hashMap, where u should store all verified traversers
+
 */
 func findTwoSumIndicies(nums []int, target int) []int {
 	verifiedNums := make(map[int]int) // key: number , value: index of that number

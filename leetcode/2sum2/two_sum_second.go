@@ -22,6 +22,12 @@ COMPLEXITY:
 time: O(logn) - for loop until head<tail
 space: O(1) - because we dont store anything additionally
 
+SOLUTION MINDSET:
+
+As your array already sorted, you dont need to use 'proposal' to forecast number.
+Use head/tail scenario, where you iterating via nums and combine sums of first/last element.
+If sum <> deesired target, you may drive head++ or tail-- to be closer to desired sum
+
 */
 func findTwoSumIndiciesNg(nums []int, target int) []int {
 	// start/end of our slice (handle 0 index later)

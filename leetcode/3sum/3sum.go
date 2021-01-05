@@ -37,6 +37,19 @@ COMPLEXITY:
 time: O(n^2) because of 2 nested loops
 space: possible O(n^2) twoSumVerifiedMap && hashMapTriplets ?
 
+SOLUTION MINDSET:
+
+Freeze 1st element, then u will have typical 2sum problem, you may:
+
+1) Sort whole array before and:
+   As your array already sorted, you dont need to use 'proposal' to forecast number.
+   Use head/tail scenario, where you iterating via nums and combine sums of first/last element.
+   If sum <> deesired target, you may drive head++ or tail-- to be closer to desired sum
+
+2) Or go with primitive 2sum:
+   Use 'proposal' to forecast number that may suite condition: proposal = "target(already know)" -  "currentTraverser(interating via nums)"
+   and try to find it in your hashMap, where u should store all verified traversers
+
 */
 func threeSumPrimitive(nums []int) [][]int {
 	res := [][]int{} // final result
