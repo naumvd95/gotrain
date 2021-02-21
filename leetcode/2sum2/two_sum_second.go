@@ -19,7 +19,7 @@ Explanation: The sum of 2 and 7 is 9. Therefore index1 = 1, index2 = 2.
 
 /*
 COMPLEXITY:
-time: O(logn) - for loop until head<tail
+time: O(n*logn) - "sort complexity" * "for loop until head<tail"
 space: O(1) - because we dont store anything additionally
 
 SOLUTION MINDSET:
