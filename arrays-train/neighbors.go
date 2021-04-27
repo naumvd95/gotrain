@@ -14,36 +14,42 @@ var (
 	yourSeat           = 5
 )
 
-func CanILeavePlace(seats []int, seatIndex, neighbors int) bool {
-	// first/last seat cant influence on neighbors
+// time: O(n) | space: O(1)
+func CanILeavePlace(seats []int, seatIndex, maxSiblings int) bool {
 	if seatIndex == 0 || seatIndex == len(seats)-1 {
+		// there is no changes if you last or first
 		return true
 	}
-	l := seats[:seatIndex]
-	r := seats[seatIndex+1:]
 
-	// if closest neighbors after shift are not siblings, its ok
-	if l[len(l)-1] != r[0] {
+	// WARNING: space: O(n) iterate via original array to reduce space complexity
+	leftPart := seats[:seatIndex]    // exсluding seatIndex
+	rightPart := seats[seatIndex+1:] // excluding seatIndex
+
+	if leftPart[len(leftPart)-1] != rightPart[0] {
+		// if closest neighbors are different, there is nothing to calculate else
 		return true
 	}
-	// at least 2 siblings detected
-	siblingsCounter := 2
-	for i := len(l) - 1; i > 0; i-- {
-		if l[i] == l[i-1] {
+	siblingsCounter := 2             // because of the above condition
+	siblingToCompare := rightPart[0] // choose one of 2 siblings for futher comparing
+
+	for i := len(leftPart) - 2; i >= 0; i-- {
+		if leftPart[i] == siblingToCompare {
 			siblingsCounter++
-		} else {
-			break
+			if siblingsCounter >= maxSiblings {
+				return false
+			}
 		}
 	}
-	for i := 0; i < len(r); i++ {
-		if r[i] == r[i+1] {
+	for i := 1; i < len(rightPart); i++ {
+		if rightPart[i] == siblingToCompare {
 			siblingsCounter++
-		} else {
-			break
+			if siblingsCounter >= maxSiblings {
+				return false
+			}
 		}
 	}
 
-	return siblingsCounter < neighbors
+	return true
 }
 
 func main() {
