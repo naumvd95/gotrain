@@ -1,0 +1,56 @@
+- name: dc1
+  racks:
+    - name: rack_1
+      status: online
+      servers:
+        - name: s1
+          sw_version: 1
+        - name: s2
+          sw_version: 1
+        - name: s3
+          sw_version: 1
+        - name: s4
+          sw_version: 1
+        - name: s5
+          sw_version: 1
+    - name: rack_2
+      status: online
+      servers:
+        - name: s1
+          sw_version: 1
+        - name: s2
+          sw_version: 1
+        - name: s3
+          sw_version: 1
+        - name: s4
+          sw_version: 1
+        - name: s5
+          sw_version: 1
+- name: dc2
+  racks:
+    - name: rack_1
+      status: online
+      servers:
+        - name: s1
+          sw_version: 1
+        - name: s2
+          sw_version: 1
+        - name: s3
+          sw_version: 1
+        - name: s4
+          sw_version: 1
+        - name: s5
+          sw_version: 1
+    - name: rack_2
+      status: online
+      servers:
+        - name: s1
+          sw_version: 1
+        - name: s2
+          sw_version: 1
+        - name: s3
+          sw_version: 1
+        - name: s4
+          sw_version: 1
+        - name: s5
+          sw_version: 1
