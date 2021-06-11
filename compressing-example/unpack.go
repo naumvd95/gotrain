@@ -7,6 +7,8 @@ import (
 	"unicode"
 )
 
+// time: O(n*m) , where m == sum of all multiplicators | space: O(n*m)
+// if quota limit 50 ->> O(1) for space & time
 func decodeStr(s string) (string, error) {
 	res := ""
 	counter := "" // base for our multiplicator
@@ -23,8 +25,13 @@ func decodeStr(s string) (string, error) {
 					return res, err
 				}
 
+				// quota check
+				if len(res)+multiplicator > 50 {
+					return res, errors.New("Fail: 50 symbols quota reached")
+				}
+
 				//  c = 1 coz we already have 1 symbol
-				for c := 1; c < multiplicator; c++ { // <<<<<<< bad time/space complexity!
+				for c := 1; c < multiplicator; c++ {
 					slice = append(slice, symbol)
 				}
 			}
