@@ -2,49 +2,54 @@ package main
 
 import "fmt"
 
-func main() {
-	board := [][]byte{{'X', '.', '.', 'X'}, {'.', '.', '.', 'X'}, {'.', '.', '.', 'X'}}
-	fmt.Printf("Here is board: %v\n", board)
-
-	ships := countBattleships(board)
-
-	fmt.Printf("Here is ships: %v", ships)
-}
-
-func countBattleships(board [][]byte) map[int][][]int {
-	// key: number of ship, value: [][] coordinates x,y of each ship cell
+func getShips(board *Board) map[int][][]int {
+	// algo: loop over matrix, if 'X' notified = start DFS traversing up/down/left/right to check is that ship has more cells
+	// do not forget to mark cells as visited in DFS to prevent doublecheck (set cell to '.')
 	ships := make(map[int][][]int)
-	currentShipNumber := 0
+	shipCounter := 0
 
-	for row := 0; row < len(board); row++ {
-		for cell := 0; cell < len(board[0]); cell++ {
-			if board[row][cell] == 'X' {
-				currentShipNumber++
-				dfs(&board, row, cell, &ships, currentShipNumber)
+	for row := 0; row < len(*board); row++ {
+		for cell := 0; cell < len((*board)[0]); cell++ {
+			if (*board)[row][cell] != 'X' {
+				//gating style
+				continue
 			}
+
+			// otherwise we found a ship
+			shipCounter++
+			// running ship sniffer!
+			board.dfs(row, cell, shipCounter, &ships)
 		}
 	}
-
 	return ships
 }
 
-func dfs(board *[][]byte, row, cell int, ships *map[int][][]int, currentShipNumber int) {
-	lenRow := len(*board) - 1
-	lenCell := len((*board)[0]) - 1
+type Board [][]byte
 
-	if row < 0 || row > lenRow || cell < 0 || cell > lenCell || (*board)[row][cell] != 'X' {
-		// if coordinates are not exist or there is no ship
+func (b *Board) dfs(row, cell, shipCounter int, ships *map[int][][]int) {
+	if row < 0 || row > len(*b)-1 || cell < 0 || cell > len((*b)[0])-1 || (*b)[row][cell] != 'X' {
+		// if coordinates out of range or there is no cell
 		return
 	}
 
-	if (*board)[row][cell] == 'X' {
-		// adding coordinates for our new ship
-		(*ships)[currentShipNumber] = append((*ships)[currentShipNumber], []int{row, cell})
-		// cleaning up board to prevent doublecheck
-		(*board)[row][cell] = '.'
-	}
-	dfs(board, row+1, cell, ships, currentShipNumber)
-	dfs(board, row, cell+1, ships, currentShipNumber)
-	dfs(board, row-1, cell, ships, currentShipNumber)
-	dfs(board, row, cell-1, ships, currentShipNumber)
+	// otherwise we found ship tail, save coordinates
+	(*ships)[shipCounter] = append((*ships)[shipCounter], []int{row, cell})
+	// spoil current cell to prevent doublecheck
+	(*b)[row][cell] = '.'
+
+	// sniff deeper
+	b.dfs(row-1, cell, shipCounter, ships)
+	b.dfs(row+1, cell, shipCounter, ships)
+	b.dfs(row, cell-1, shipCounter, ships)
+	b.dfs(row, cell+1, shipCounter, ships)
+}
+
+func main() {
+	board := Board{{'X', '.', '.', 'X'}, {'.', '.', '.', 'X'}, {'.', '.', '.', 'X'}}
+	expectedShips := 2
+
+	fmt.Printf("Current board: %v\n", board)
+	ships := getShips(&board)
+	fmt.Printf("ships amount: %v , expected: %v\n", len(ships), expectedShips)
+	fmt.Printf("ships coordinates: %v\n", ships)
 }
