@@ -39,7 +39,7 @@ func pickRandomLine(offset int64, file *os.File) (string, error) {
 		if err != nil {
 			return string(res), err
 		}
-		// there is nothing to read else
+		// there is nothing to read else TODO use it in above as well ^^
 		if bytesRead == 0 {
 			break
 		}
