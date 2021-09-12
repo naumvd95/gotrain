@@ -1,0 +1,7 @@
+Given string of lowercase english letters, need to implement 2 functions:
+1. output string w/o vowels
+2. outpul string w/p consonants
+
+vowels := "AEIOUY"
+consonants := "BCDFGJKLMNPQSTVXZHRW"
+

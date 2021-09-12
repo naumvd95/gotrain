@@ -1,0 +1,31 @@
+Determine number of indices between leftmost and rightmost word occurrence. For example consider the following string:
+
+progxrammerrxproxgrammer
+I need to find the rx length which is 2 between the first progxrammer and second proxgrammer. To achieve this I need to find a way to identify a subset of the above string can be rearranged to form the word "programmer". As an another example consider this:
+
+xprogxrmaxemrppprmmograeiruu
+Again it should find pp which is between two set of programmer words.
+
+
+Examples:
+
+Input:
+"progxrammerrxproxgrammer"
+
+Output:
+2
+
+Explanation:
+progxrammer|RX|proxgrammer
+            2
+------------------------------
+
+Input:
+"xprogxrmaxemrppprmmograeiruu"
+
+Output:
+2
+
+Explanation:
+xprogxrmaxemr|PP|prmmograeiruu
+              2

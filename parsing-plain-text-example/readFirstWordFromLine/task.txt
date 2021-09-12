@@ -1,0 +1,1 @@
+Read first word from the each line in file
