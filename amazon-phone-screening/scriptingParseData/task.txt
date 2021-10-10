@@ -1,0 +1,27 @@
+Given a log file that looks like this:
+
+```
+charles=3918
+alice=0
+bob=100
+charles=3918
+django=77
+alice=0
+```
+
+Write a program that removes the duplicate lines and sorts the pairs
+by value.
+
+Keep in mind that duplicate may be only 100% identical, i.e. there is no chance for
+```
+alice=0
+alice=1
+```
+
+-----------
+answer for example:
+
+alice=0
+django=77
+bob=100
+charles=3918
