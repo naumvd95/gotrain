@@ -62,5 +62,5 @@ func main() {
 	sort.Slice(uniqNamesSlice, func(a, b int) bool {
 		return uniqNamesSlice[a].Number < uniqNamesSlice[b].Number
 	})
-	fmt.Printf("Here is sorted dataL %v\n", uniqNamesSlice)
+	fmt.Printf("Here is sorted data %v\n", uniqNamesSlice)
 }
