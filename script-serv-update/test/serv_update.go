@@ -1,156 +1,74 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"io/ioutil"
-	"strings"
+	"math/rand"
 	"sync"
+	"time"
 
 	"gopkg.in/yaml.v2"
 )
 
-var inputData = `
-- name: dc1
-  racks:
-    - name: rack_1
-      online: true
-      servers:
-        - name: s1
-          sw_version: 1
-        - name: s2
-          sw_version: 1
-        - name: s3
-          sw_version: 1
-        - name: s4
-          sw_version: 1
-        - name: s5
-          sw_version: 1
-    - name: rack_2
-      online: true
-      servers:
-        - name: s1
-          sw_version: 1
-        - name: s2
-          sw_version: 1
-        - name: s3
-          sw_version: 1
-        - name: s4
-          sw_version: 1
-        - name: s5
-          sw_version: 1
-- name: dc2
-  racks:
-    - name: rack_1
-      online: true
-      servers:
-        - name: s1
-          sw_version: 1
-        - name: s2
-          sw_version: 1
-        - name: s3
-          sw_version: 1
-        - name: s4
-          sw_version: 1
-        - name: s5
-          sw_version: 555
-    - name: rack_2
-      online: true
-      servers:
-        - name: s1
-          sw_version: 1
-        - name: s2
-          sw_version: 1
-        - name: s3
-          sw_version: 1
-        - name: s4
-          sw_version: 666
-        - name: s5
-          sw_version: 555
-`
-
-type Datacenter struct {
-	Name  string `yaml:"name"`
-	Racks []Rack `yaml:"racks"`
-}
-
-type Rack struct {
-	Name    string   `yaml:"name"`
-	Online  bool     `yaml:"online"`
-	Servers []Server `yaml:"servers"`
-}
+/* algo:
+   1. read all file, otherwise we cant unmarshal it
+   2. prepare data structs
+   3. go routines while looping over DC's
+   4. inside each routine looping over racks w/o concurrency
+   5. mark rack offline
+   6. inside each rack you may spin up go routine as well
+   7. mark rack online
+*/
 
 type Server struct {
 	Name    string `yaml:"name"`
 	Version int    `yaml:"sw_version"`
 }
 
-func updateRack(rack Rack, newVersion int) map[string]error {
-	servers := rack.Servers
-	errorMap := make(map[string]error)
+type Rack struct {
+	Name    string   `yaml:"name"`
+	Status  string   `yaml:"status"`
+	Servers []Server `yaml:"servers"`
+}
 
-	// prepare routine boilerplate
-	var wg sync.WaitGroup
-	wg.Add(len(servers))
-
-	for i := 0; i < len(servers); i++ {
-		go func(s *Server) {
-			defer wg.Done()
-			servMeta := fmt.Sprintf("Server %v rack %v, updating from %v to %v", s.Name, rack.Name, s.Version, newVersion)
-			fmt.Println(servMeta)
-
-			oldVersion := s.Version
-			if oldVersion > newVersion {
-				errMsg := fmt.Sprintf("[failed]: %v: version mismatch\n", servMeta)
-				servHash := fmt.Sprintf("%v_%v", s.Name, rack.Name)
-
-				errorMap[servHash] = errors.New(errMsg)
-			} else {
-				s.Version = newVersion
-			}
-		}(&servers[i])
-	}
-
-	wg.Wait()
-
-	return errorMap
+type Datacenter struct {
+	Name  string `yaml:"name"`
+	Racks []Rack `yaml:"racks"`
 }
 
 func main() {
-	newVersion := 2
-	s := strings.NewReader(inputData)
-	dataBytes, err := ioutil.ReadAll(s)
+	inputFileName := "servers_input.yaml"
+	data, err := ioutil.ReadFile(inputFileName)
 	if err != nil {
 		panic(err)
 	}
 
-	var hardware []Datacenter
-	err = yaml.Unmarshal(dataBytes, &hardware)
+	var dcs []Datacenter
+	err = yaml.Unmarshal(data, &dcs)
 	if err != nil {
 		panic(err)
 	}
-	fmt.Printf("Current state of HW: %v\n", hardware)
+	fmt.Printf("here is parsed data %v\n", dcs)
 
-	serverErrors := []map[string]error{}
-	// dc loop can be multi-thread
-	for _, dc := range hardware {
-		for _, r := range dc.Racks {
-			r.Online = false
-			fmt.Printf("Updating rack %v online: %v in dc %v\n", r.Name, r.Online, dc.Name)
+	var wg sync.WaitGroup
+	wg.Add(len(dcs))
+	for i := 0; i < len(dcs); i++ {
+		currentDC := dcs[i]
 
-			errorsMap := updateRack(r, newVersion)
-			if len(errorsMap) > 0 {
-				fmt.Printf("Updating rack %v online: %v in dc %v: [failed], rack will be offline\n", r.Name, r.Online, dc.Name)
-				serverErrors = append(serverErrors, errorsMap)
-			} else {
-				r.Online = true
-			}
-		}
+		go func(d Datacenter) {
+			fmt.Printf("We are in dc %v\n", d.Name)
+			seconds := getRandSec(8)
+			fmt.Printf("here is sec amount: %v\n", seconds)
+			time.Sleep(time.Duration(seconds) * time.Second)
+			fmt.Printf("first rack is %v\n", d.Racks[0].Name)
+
+			defer wg.Done()
+		}(currentDC)
 	}
-	if len(serverErrors) > 0 {
-		fmt.Printf("Update failed: %v \n Current state of HW: %v\n", serverErrors, hardware)
-		panic("Update failed")
-	}
+	wg.Wait()
+}
 
-	fmt.Printf("[success] Current state of HW: %v\n", hardware)
+func getRandSec(r int64) int64 {
+	rand.Seed(time.Now().UnixNano())
+	return rand.Int63n(r + 1)
 }
