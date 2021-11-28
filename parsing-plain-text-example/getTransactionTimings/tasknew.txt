@@ -1,0 +1,18 @@
+u given 2 logfiles with transaction (id, timestamp, IP) metadata in csv format
+
+fileTransStart:
+asdasdID12, 102120310, 192.168.10.4
+
+fileTransEnd:
+asdasdID12, 102120350, 192.168.10.4
+
+
+--------
+u need to fetch avg times of all trans execution, chained with IP
+
+
+input:
+ip := "192.168.10.4"
+
+output:
+avgTime := "102120330"

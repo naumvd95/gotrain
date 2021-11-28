@@ -1,0 +1,11 @@
+You given an array of intergers, and a value of `k`
+You need to generate a maximium number, contains `k` integers
+Note that you cant shift number order in array, you need to follow indices.
+
+examples:
+
+input := []int{7,2,5,9}
+answer = 79
+
+input := []int{7,2,9,8}
+answer = 98
